@@ -8,13 +8,13 @@
 import Foundation
 
 // MARK: - CountryModel
-struct CountryModel: Codable {
-    let next: String
+struct CountryModel: Decodable {
+    let next: String?
     let countries: [Country]
 }
 
 // MARK: - Country
-struct Country: Codable {
+struct Country: Decodable {
     let name, continent, capital: String
     let population: Int
     let descriptionSmall, description: String
@@ -23,7 +23,7 @@ struct Country: Codable {
 }
 
 // MARK: - CountryInfo
-struct CountryInfo: Codable {
+struct CountryInfo: Decodable {
     let images: [String]
     let flag: String
 }

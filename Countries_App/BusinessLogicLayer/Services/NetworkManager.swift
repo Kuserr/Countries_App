@@ -10,18 +10,14 @@ import Foundation
 enum DataError: Error {
     case invalidData
     case invalidResponse
-    case message(_ error: Error?)
+    case message(_ error: Error)
 }
 
-typealias CountryModelCallback = (Result<CountryModel, DataError>) -> Void
+typealias ModelCallback<T: Decodable> = (Result<T, DataError>) -> Void
 
 final class NetworkManager {
     
-    init() {}
-    
-    private let url = URL(string: "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json")!
-    
-    func fetchData(completion: @escaping CountryModelCallback) {
+    func fetchData<T: Decodable>(url: URL, completion: @escaping ModelCallback<T>) {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data else {
@@ -29,13 +25,13 @@ final class NetworkManager {
                 return
             }
             guard let response = response as? HTTPURLResponse, 200 ... 299  ~= response.statusCode else {
-            completion(.failure(.invalidResponse))
-            return
+                completion(.failure(.invalidResponse))
+                return
             }
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let countries = try decoder.decode(CountryModel.self, from: data)
+                let countries = try decoder.decode(T.self, from: data)
                 completion(.success(countries))
             }
             catch {

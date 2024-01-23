@@ -73,7 +73,7 @@
                 <outlet property="capitalLabel" destination="h8N-we-eob" id="Xpt-NB-wwj"/>
                 <outlet property="countryLabel" destination="ouW-5n-0ok" id="7f9-mA-IqF"/>
                 <outlet property="descriptionLabel" destination="cP7-mz-JLd" id="840-7f-QJ6"/>
-                <outlet property="imageLabel" destination="Cbp-hb-wmx" id="X7X-T5-fKd"/>
+                <outlet property="flagImageView" destination="Cbp-hb-wmx" id="0bq-fl-VGQ"/>
             </connections>
             <point key="canvasLocation" x="103.81679389312977" y="141.5492957746479"/>
         </collectionViewCell>
