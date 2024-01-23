@@ -133,9 +133,6 @@ extension ListOfCountriesViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension ListOfCountriesViewController: UICollectionViewDelegate {
-}
-
 private extension String {
     var localized: String {
         return NSLocalizedString(self, comment: "")

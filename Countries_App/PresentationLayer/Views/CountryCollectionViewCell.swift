@@ -9,6 +9,9 @@ import UIKit
 
 final class CountryCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - Private properties
+    private let noImage = "no_image_placeholder"
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -47,7 +50,6 @@ final class CountryCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Private functions and properties
     
-    private let noImage = "no_image_placeholder"
     private func downloadImage(from url: URL) {
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data, let image = UIImage(data: data) {
