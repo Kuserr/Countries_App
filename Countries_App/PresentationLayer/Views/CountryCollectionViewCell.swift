@@ -11,6 +11,8 @@ final class CountryCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Private properties
     private let noImage = "no_image_placeholder"
+    private static var imageCache = NSCache<NSString, UIImage>()
+    private var imageCache = CountryCollectionViewCell.imageCache
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -26,11 +28,7 @@ final class CountryCollectionViewCell: UICollectionViewCell {
         capitalLabel.text = country.capital
         descriptionLabel.text = country.descriptionSmall
         
-        if let imageUrl = URL(string: country.countryInfo.flag) {
-            downloadImage(from: imageUrl)
-        } else {
-            flagImageView.image = UIImage(named: self.noImage)
-        }
+        imageLoading(with: country)
     }
     
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
@@ -48,17 +46,34 @@ final class CountryCollectionViewCell: UICollectionViewCell {
         CGSize(width: UIView.noIntrinsicMetric, height: 1)
     }
     
-    // MARK: - Private functions and properties
+    // MARK: - Private functions
     
     private func downloadImage(from url: URL) {
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data, let image = UIImage(data: data) {
+                self.imageCache.setObject(image, forKey: url.absoluteString as NSString)
                 DispatchQueue.main.async {
                     self.flagImageView.image = image
                 }
             } else {
-                self.flagImageView.image = UIImage(named: self.noImage)
+                self.imageCache.setObject(UIImage(named: self.noImage) ?? UIImage(), forKey: url.absoluteString as NSString)
+                DispatchQueue.main.async {
+                    self.flagImageView.image = UIImage(named: self.noImage)
+                }
             }
         }.resume()
+    }
+    
+    private func imageLoading(with country: Country) {
+        if let imageUrl = URL(string: country.countryInfo.flag) {
+            if let cachedImage = imageCache.object(forKey: imageUrl.absoluteString as NSString) {
+                DispatchQueue.main.async {
+                    self.flagImageView.image = cachedImage
+                }
+                return
+            }
+            downloadImage(from: imageUrl)
+        } else {return}
     }
 }

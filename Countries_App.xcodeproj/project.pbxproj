@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F112FFD92B5FD91E007131B9 /* Localizable in Resources */ = {isa = PBXBuildFile; fileRef = F112FFDB2B5FD91E007131B9 /* Localizable */; };
+		F112FFDE2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F112FFDD2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift */; };
 		F1165BC82B519812006F7220 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1165BC72B519812006F7220 /* AppDelegate.swift */; };
 		F1165BCA2B519812006F7220 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1165BC92B519812006F7220 /* SceneDelegate.swift */; };
 		F1165BD12B519815006F7220 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1165BD02B519815006F7220 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* Begin PBXFileReference section */
 		F112FFDA2B5FD91E007131B9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = en.lproj/Localizable; sourceTree = "<group>"; };
 		F112FFDC2B5FD928007131B9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text; name = Base; path = Base.lproj/Localizable; sourceTree = "<group>"; };
+		F112FFDD2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterLoadingCollectionReusableView.swift; sourceTree = "<group>"; };
 		F1165BC42B519812006F7220 /* Countries_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Countries_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1165BC72B519812006F7220 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F1165BC92B519812006F7220 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				F1165C092B548D74006F7220 /* ListOfCountriesViewController.xib */,
 				F1165BF82B5420B9006F7220 /* CountryCollectionViewCell.swift */,
 				F1165BF92B5420B9006F7220 /* CountryCollectionViewCell.xib */,
+				F112FFDD2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -210,6 +213,7 @@
 				F1165BC82B519812006F7220 /* AppDelegate.swift in Sources */,
 				F1165BEB2B519C18006F7220 /* NetworkManager.swift in Sources */,
 				F1165BFA2B5420B9006F7220 /* CountryCollectionViewCell.swift in Sources */,
+				F112FFDE2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift in Sources */,
 				F1165BE92B519BD8006F7220 /* CountryModel.swift in Sources */,
 				F1165BCA2B519812006F7220 /* SceneDelegate.swift in Sources */,
 				F1165BED2B541020006F7220 /* ListOfCountriesPresenter.swift in Sources */,

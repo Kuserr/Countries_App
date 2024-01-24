@@ -9,11 +9,12 @@ import Foundation
 
 final class ListOfCountriesPresenter {
     
-    // MARK: - Private properties
+    // MARK: - Private property
     
     private let dataService: NetworkManager
     
     var arrayOfCountries = [Country]()
+    var nextPageUrl: String = "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json"
     
     init(dataService: NetworkManager) {
         self.dataService = dataService
@@ -23,12 +24,13 @@ final class ListOfCountriesPresenter {
     typealias ErrorHandler = (DataError) -> Void
     
     func loadData(сompletion: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) {
-        guard let baseUrl = URL(string: "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json") else {return}
+        guard let baseUrl = URL(string: nextPageUrl) else {return}
         dataService.fetchData(url: baseUrl) { [weak self] (result: Result<CountryModel, DataError>) in
             switch result {
             case .success(let data):
-                let countries = data.countries
-                self?.arrayOfCountries = countries
+                let result = data
+                self?.arrayOfCountries.append(contentsOf: result.countries)
+                self?.nextPageUrl = result.next ?? ""
                 сompletion()
             case .failure(let error):
                 errorHandler(error)

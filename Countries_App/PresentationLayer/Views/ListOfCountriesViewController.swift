@@ -14,6 +14,7 @@ final class ListOfCountriesViewController: UIViewController {
     private let presenter = ListOfCountriesPresenter(dataService: NetworkManager())
     private let countryCollectionViewCell = String(describing: CountryCollectionViewCell.self)
     private let countriesScreenTitle = "Countries"
+    private let footerCollectionReusableView = String(describing: FooterLoadingCollectionReusableView.self)
     
     private lazy var mainCollectionView: UICollectionView = {
         
@@ -23,6 +24,9 @@ final class ListOfCountriesViewController: UIViewController {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(UINib(nibName: countryCollectionViewCell, bundle: nil), forCellWithReuseIdentifier: countryCollectionViewCell)
+        collectionView.register(FooterLoadingCollectionReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                                withReuseIdentifier: footerCollectionReusableView)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -65,6 +69,18 @@ final class ListOfCountriesViewController: UIViewController {
     private func updateUI() {
         DispatchQueue.main.async {
             self.mainCollectionView.reloadData()
+        }
+    }
+    
+    private func loadNextPage() {
+        guard !presenter.nextPageUrl.isEmpty else {
+            return}
+        presenter.loadData { [weak self] in
+            self?.updateUI()
+        } errorHandler: { error in
+            DispatchQueue.main.async {
+                self.handleError(error)
+            }
         }
     }
     
@@ -116,7 +132,32 @@ extension ListOfCountriesViewController:  UICollectionViewDataSource  {
     }
 }
 
-extension ListOfCountriesViewController: UICollectionViewDelegateFlowLayout {
+extension ListOfCountriesViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard indexPath.row == presenter.arrayOfCountries.count - 1 && !presenter.nextPageUrl.isEmpty else {
+            return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            self.loadNextPage()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionFooter,
+              let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                           withReuseIdentifier: footerCollectionReusableView,
+                                                                           for: indexPath
+              ) as? FooterLoadingCollectionReusableView
+        else {
+            fatalError("Unsupported")
+        }
+        if !presenter.nextPageUrl.isEmpty {
+            footer.startAnimating()
+        } else {
+            footer.stopAnimating()
+        }
+        return footer
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let country = presenter.arrayOfCountries[indexPath.row]
         let width = collectionView.bounds.width - 5
@@ -130,6 +171,17 @@ extension ListOfCountriesViewController: UICollectionViewDelegateFlowLayout {
         }
         
         return CGSize(width: width, height: max(minHeight, textHeight))
+    }
+}
+
+extension ListOfCountriesViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        guard !presenter.nextPageUrl.isEmpty else {
+            return .zero
+        }
+        return CGSize(width: collectionView.frame.width,
+                      height: 100)
     }
 }
 
