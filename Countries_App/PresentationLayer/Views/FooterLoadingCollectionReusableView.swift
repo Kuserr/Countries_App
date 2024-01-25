@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FooterLoadingCollectionReusableView: UICollectionReusableView {
+final class FooterLoadingCollectionReusableView: UICollectionReusableView {
     
     // MARK: - Private property
     

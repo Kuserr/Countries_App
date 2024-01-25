@@ -14,7 +14,8 @@ final class ListOfCountriesPresenter {
     private let dataService: NetworkManager
     
     var arrayOfCountries = [Country]()
-    var nextPageUrl: String = "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json"
+    var baseURL = "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json"
+    var nextPageUrl: String = ""
     
     init(dataService: NetworkManager) {
         self.dataService = dataService
@@ -23,8 +24,8 @@ final class ListOfCountriesPresenter {
     typealias CompletionHandler = () -> Void
     typealias ErrorHandler = (DataError) -> Void
     
-    func loadData(сompletion: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) {
-        guard let baseUrl = URL(string: nextPageUrl) else {return}
+    func loadData(url: String, сompletion: @escaping CompletionHandler, errorHandler: @escaping ErrorHandler) {
+        guard let baseUrl = URL(string: url) else {return}
         dataService.fetchData(url: baseUrl) { [weak self] (result: Result<CountryModel, DataError>) in
             switch result {
             case .success(let data):

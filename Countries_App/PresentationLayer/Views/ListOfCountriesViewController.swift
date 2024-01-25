@@ -15,6 +15,7 @@ final class ListOfCountriesViewController: UIViewController {
     private let countryCollectionViewCell = String(describing: CountryCollectionViewCell.self)
     private let countriesScreenTitle = "Countries"
     private let footerCollectionReusableView = String(describing: FooterLoadingCollectionReusableView.self)
+    private var refreshControl = UIRefreshControl()
     
     private lazy var mainCollectionView: UICollectionView = {
         
@@ -30,6 +31,7 @@ final class ListOfCountriesViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.addSubview(refreshControl)
         return collectionView
     }()
     
@@ -39,11 +41,12 @@ final class ListOfCountriesViewController: UIViewController {
         super.viewDidLoad()
         title = countriesScreenTitle.localized
         setup()
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        presenter.loadData { [weak self] in
+        presenter.loadData(url: presenter.baseURL) { [weak self] in
             self?.updateUI()
         } errorHandler: { error in
             DispatchQueue.main.async {
@@ -75,8 +78,23 @@ final class ListOfCountriesViewController: UIViewController {
     private func loadNextPage() {
         guard !presenter.nextPageUrl.isEmpty else {
             return}
-        presenter.loadData { [weak self] in
+        presenter.loadData(url: presenter.nextPageUrl) { [weak self] in
             self?.updateUI()
+        } errorHandler: { error in
+            DispatchQueue.main.async {
+                self.handleError(error)
+            }
+        }
+    }
+    
+    @objc private func refresh(send: UIRefreshControl) {
+        CountryCollectionViewCell.imageCache.removeAllObjects()
+        presenter.arrayOfCountries.removeAll()
+        presenter.loadData(url: presenter.baseURL) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.mainCollectionView.reloadData()
+                self?.refreshControl.endRefreshing()
+            }
         } errorHandler: { error in
             DispatchQueue.main.async {
                 self.handleError(error)
