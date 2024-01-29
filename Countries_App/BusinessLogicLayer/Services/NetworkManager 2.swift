@@ -13,13 +13,9 @@ enum DataError: Error {
     case message(_ error: Error)
 }
 
-protocol HttpProtocol {
-    func fetchData<T: Decodable>(url: URL, completion: @escaping ModelCallback<T>)
-}
-
 typealias ModelCallback<T: Decodable> = (Result<T, DataError>) -> Void
 
-final class NetworkManager: HttpProtocol {
+final class NetworkManager {
     
     func fetchData<T: Decodable>(url: URL, completion: @escaping ModelCallback<T>) {
         
