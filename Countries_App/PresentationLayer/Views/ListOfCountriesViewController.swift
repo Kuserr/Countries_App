@@ -11,7 +11,7 @@ final class ListOfCountriesViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private let presenter = ListOfCountriesPresenter(dataService: NetworkManager())
+    private let presenter = PresenterFactory.listOfCountriesPresenter()
     private let countryCollectionViewCell = String(describing: CountryCollectionViewCell.self)
     private let countriesScreenTitle = "Countries"
     private let footerCollectionReusableView = String(describing: FooterLoadingCollectionReusableView.self)
