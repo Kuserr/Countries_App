@@ -14,22 +14,13 @@ enum DataError: Error, Equatable {
     case message(_ error: Error)
     
     static func == (lhs: DataError, rhs: DataError) -> Bool {
-        switch (lhs, rhs) {
-        case (.invalidData, .invalidData):
-            return true
-        case (.invalidResponse, .invalidResponse):
-            return true
-        case (.message(let error1), .message(let error2)):
-            return error1.localizedDescription == error2.localizedDescription
-        default:
-            return false
-        }
+        lhs.localizedDescription == rhs.localizedDescription
     }
 }
 
 protocol NetworkManagerProtocol {
     func fetchData<T: Decodable>(url: URL, completion: @escaping ModelCallback<T>)
-    var urlSession: URLSession {get}
+    var urlSession: URLSession { get }
 }
 
 typealias ModelCallback<T: Decodable> = (Result<T, DataError>) -> Void
@@ -44,7 +35,7 @@ final class NetworkManager: NetworkManagerProtocol {
     
     func fetchData<T: Decodable>(url: URL, completion: @escaping ModelCallback<T>) {
         
-        self.urlSession.dataTask(with: url) { data, response, error in
+        urlSession.dataTask(with: url) { data, response, error in
             guard let data else {
                 completion(.failure(.invalidData))
                 return

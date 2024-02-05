@@ -20,6 +20,8 @@
 		F1165BFB2B5420B9006F7220 /* CountryCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1165BF92B5420B9006F7220 /* CountryCollectionViewCell.xib */; };
 		F1165C0A2B548D74006F7220 /* ListOfCountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1165C082B548D74006F7220 /* ListOfCountriesViewController.swift */; };
 		F1165C0B2B548D74006F7220 /* ListOfCountriesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1165C092B548D74006F7220 /* ListOfCountriesViewController.xib */; };
+		F128DAD32B70F5960053E7BD /* PresenterFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F128DAD22B70F5960053E7BD /* PresenterFactory.swift */; };
+		F128DAD62B711EEC0053E7BD /* JsonMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F128DAD52B711EEC0053E7BD /* JsonMock.swift */; };
 		F1D3CEEA2B6907F000680499 /* NetworkManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D3CEE92B6907F000680499 /* NetworkManagerTests.swift */; };
 		F1F42A982B699B04006187D7 /* MockURLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F42A972B699B04006187D7 /* MockURLSessionProtocol.swift */; };
 		F1F42A9A2B69A158006187D7 /* ListOfCountriesPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F42A992B69A158006187D7 /* ListOfCountriesPresenterTests.swift */; };
@@ -52,6 +54,8 @@
 		F1165BF92B5420B9006F7220 /* CountryCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryCollectionViewCell.xib; sourceTree = "<group>"; };
 		F1165C082B548D74006F7220 /* ListOfCountriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfCountriesViewController.swift; sourceTree = "<group>"; };
 		F1165C092B548D74006F7220 /* ListOfCountriesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListOfCountriesViewController.xib; sourceTree = "<group>"; };
+		F128DAD22B70F5960053E7BD /* PresenterFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenterFactory.swift; sourceTree = "<group>"; };
+		F128DAD52B711EEC0053E7BD /* JsonMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonMock.swift; sourceTree = "<group>"; };
 		F1D3CEDA2B68352700680499 /* Countries_AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Countries_AppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D3CEE92B6907F000680499 /* NetworkManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerTests.swift; sourceTree = "<group>"; };
 		F1F42A972B699B04006187D7 /* MockURLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSessionProtocol.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				F1165BEC2B541020006F7220 /* ListOfCountriesPresenter.swift */,
+				F128DAD22B70F5960053E7BD /* PresenterFactory.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -163,6 +168,14 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		F128DAD42B711EC80053E7BD /* TestResources */ = {
+			isa = PBXGroup;
+			children = (
+				F128DAD52B711EEC0053E7BD /* JsonMock.swift */,
+			);
+			path = TestResources;
+			sourceTree = "<group>";
+		};
 		F13BAAF22B6AF10A007EDE17 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -183,6 +196,7 @@
 		F1D3CEDB2B68352700680499 /* Countries_AppTests */ = {
 			isa = PBXGroup;
 			children = (
+				F128DAD42B711EC80053E7BD /* TestResources */,
 				F13BAAF42B6AF12E007EDE17 /* Tests */,
 				F13BAAF22B6AF10A007EDE17 /* Mocks */,
 			);
@@ -297,6 +311,7 @@
 				F1165BFA2B5420B9006F7220 /* CountryCollectionViewCell.swift in Sources */,
 				F112FFDE2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift in Sources */,
 				F1165BE92B519BD8006F7220 /* CountryModel.swift in Sources */,
+				F128DAD32B70F5960053E7BD /* PresenterFactory.swift in Sources */,
 				F1165BCA2B519812006F7220 /* SceneDelegate.swift in Sources */,
 				F1165BED2B541020006F7220 /* ListOfCountriesPresenter.swift in Sources */,
 				F1165C0A2B548D74006F7220 /* ListOfCountriesViewController.swift in Sources */,
@@ -308,6 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1D3CEEA2B6907F000680499 /* NetworkManagerTests.swift in Sources */,
+				F128DAD62B711EEC0053E7BD /* JsonMock.swift in Sources */,
 				F1F42A982B699B04006187D7 /* MockURLSessionProtocol.swift in Sources */,
 				F1F42A9A2B69A158006187D7 /* ListOfCountriesPresenterTests.swift in Sources */,
 			);

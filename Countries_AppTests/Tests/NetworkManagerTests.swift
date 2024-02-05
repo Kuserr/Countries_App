@@ -21,9 +21,9 @@ final class NetworkManagerTests: XCTestCase {
         super.tearDown()
     }
     
-    func test_successful_data_fetching() {
+    func test_successful_data_fetching() throws {
         let expectation = XCTestExpectation(description: "Fetching data successfully")
-        guard let url = URL(string: "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json") else { return }
+        let url = try XCTUnwrap(URL(string: "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json"), "URL should be valid!")
         
         networkManager.fetchData(url: url) { (result: Result<CountryModel, DataError>) in
             switch result {
@@ -37,10 +37,10 @@ final class NetworkManagerTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
     }
     
-    func test_fetching_data_with_error() {
+    func test_fetching_data_with_error() throws {
         let expectation = XCTestExpectation(description: "Error handling test")
         
-        guard let url = URL(string: "example.com") else { return }
+        let url = try XCTUnwrap(URL(string: "example.com"), "You should not be nil.")
         
         networkManager.fetchData(url: url) { (result: Result<CountryModel, DataError>) in
             switch result {
