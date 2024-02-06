@@ -9,14 +9,17 @@ import UIKit
 
 final class CountryImagesCollectionViewCell: UICollectionViewCell {
     
-    private let noImage = "no_image_placeholder"
-    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    @IBOutlet weak var countryImagesImageView: UIImageView!
-    @IBOutlet weak var pageControl: UIPageControl!
+    // MARK: - Private properties
+    
+    private let noImage = "no_image_placeholder"
+    @IBOutlet weak private var countryImagesImageView: UIImageView!
+    @IBOutlet weak private var pageControl: UIPageControl!
+    
+    // MARK: - Cell configuration
     
     func configure(with images: String, flagURL: String, numberOfPages: Int, imageIndex: Int) {
         pageControl.currentPageIndicatorTintColor = .white
@@ -24,6 +27,8 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
         
         imageLoading(with: images, flagURL: flagURL, numberOfPages: numberOfPages, imageIndex: imageIndex)
     }
+    
+    // MARK: - Private functions
     
     private func downloadImage(from url: URL) {
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
@@ -45,7 +50,6 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
                 }
                 return
             }
-            
             DispatchQueue.main.async {
                 self.countryImagesImageView.contentMode = .scaleToFill
                 self.countryImagesImageView.image = image
@@ -56,16 +60,16 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
     
     private func imageLoading(with images: String, flagURL: String, numberOfPages: Int, imageIndex: Int) {
         if images.isEmpty {
-            if !flagURL.isEmpty, let flagURL = URL(string: flagURL) {
-                self.pageControl.isHidden = true
-                downloadImage(from: flagURL)
-            } else {
-                DispatchQueue.main.async {
+            guard !flagURL.isEmpty, let flagURL = URL(string: flagURL) else {
+                return DispatchQueue.main.async {
                     self.countryImagesImageView.image = UIImage(named: self.noImage)
                     self.pageControl.isHidden = true
                 }
             }
-        } else {
+            self.pageControl.isHidden = true
+            downloadImage(from: flagURL)
+        }
+        else {
             guard let imageURL = URL(string: images) else {
                 return
             }

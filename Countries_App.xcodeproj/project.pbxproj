@@ -20,6 +20,8 @@
 		F1165BFB2B5420B9006F7220 /* CountryCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1165BF92B5420B9006F7220 /* CountryCollectionViewCell.xib */; };
 		F1165C0A2B548D74006F7220 /* ListOfCountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1165C082B548D74006F7220 /* ListOfCountriesViewController.swift */; };
 		F1165C0B2B548D74006F7220 /* ListOfCountriesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F1165C092B548D74006F7220 /* ListOfCountriesViewController.xib */; };
+		F128DAD92B71503A0053E7BD /* CountryDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F128DAD72B71503A0053E7BD /* CountryDetailsTableViewCell.swift */; };
+		F128DADA2B71503B0053E7BD /* CountryDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F128DAD82B71503A0053E7BD /* CountryDetailsTableViewCell.xib */; };
 		F190A8252B6BB9F70002A23A /* CountryDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F190A8232B6BB9F70002A23A /* CountryDetailsViewController.swift */; };
 		F190A8262B6BB9F70002A23A /* CountryDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F190A8242B6BB9F70002A23A /* CountryDetailsViewController.xib */; };
 		F190A8292B6BC70A0002A23A /* CountryImagesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F190A8272B6BC70A0002A23A /* CountryImagesCollectionViewCell.swift */; };
@@ -43,6 +45,8 @@
 		F1165BF92B5420B9006F7220 /* CountryCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryCollectionViewCell.xib; sourceTree = "<group>"; };
 		F1165C082B548D74006F7220 /* ListOfCountriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfCountriesViewController.swift; sourceTree = "<group>"; };
 		F1165C092B548D74006F7220 /* ListOfCountriesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListOfCountriesViewController.xib; sourceTree = "<group>"; };
+		F128DAD72B71503A0053E7BD /* CountryDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		F128DAD82B71503A0053E7BD /* CountryDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		F190A8232B6BB9F70002A23A /* CountryDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDetailsViewController.swift; sourceTree = "<group>"; };
 		F190A8242B6BB9F70002A23A /* CountryDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryDetailsViewController.xib; sourceTree = "<group>"; };
 		F190A8272B6BC70A0002A23A /* CountryImagesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryImagesCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -169,6 +173,8 @@
 				F190A8242B6BB9F70002A23A /* CountryDetailsViewController.xib */,
 				F190A8272B6BC70A0002A23A /* CountryImagesCollectionViewCell.swift */,
 				F190A8282B6BC70A0002A23A /* CountryImagesCollectionViewCell.xib */,
+				F128DAD72B71503A0053E7BD /* CountryDetailsTableViewCell.swift */,
+				F128DAD82B71503A0053E7BD /* CountryDetailsTableViewCell.xib */,
 			);
 			path = CountryDetails;
 			sourceTree = "<group>";
@@ -236,6 +242,7 @@
 				F190A8262B6BB9F70002A23A /* CountryDetailsViewController.xib in Resources */,
 				F1165BD42B519815006F7220 /* LaunchScreen.storyboard in Resources */,
 				F1165C0B2B548D74006F7220 /* ListOfCountriesViewController.xib in Resources */,
+				F128DADA2B71503B0053E7BD /* CountryDetailsTableViewCell.xib in Resources */,
 				F1165BFB2B5420B9006F7220 /* CountryCollectionViewCell.xib in Resources */,
 				F1165BD12B519815006F7220 /* Assets.xcassets in Resources */,
 			);
@@ -252,6 +259,7 @@
 				F190A8252B6BB9F70002A23A /* CountryDetailsViewController.swift in Sources */,
 				F1165BEB2B519C18006F7220 /* NetworkManager.swift in Sources */,
 				F190A8292B6BC70A0002A23A /* CountryImagesCollectionViewCell.swift in Sources */,
+				F128DAD92B71503A0053E7BD /* CountryDetailsTableViewCell.swift in Sources */,
 				F1165BFA2B5420B9006F7220 /* CountryCollectionViewCell.swift in Sources */,
 				F112FFDE2B614D77007131B9 /* FooterLoadingCollectionReusableView.swift in Sources */,
 				F1165BE92B519BD8006F7220 /* CountryModel.swift in Sources */,
