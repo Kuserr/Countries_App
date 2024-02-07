@@ -14,8 +14,6 @@ Pods/
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
-Countries_App.xcodeproj/project.pbxproj
-Countries_App.xcodeproj/xcshareddata/xcschemes/Countries_App.xcscheme
 xcschemes/
 xcshareddata/
 
