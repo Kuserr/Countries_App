@@ -9,8 +9,6 @@ import UIKit
 
 final class CountryDetailsViewController: UIViewController {
     
-    var country: Country?
-    
     // MARK: - Private properties
     
     private let presenter = ListOfCountriesPresenter(dataService: NetworkManager())
@@ -97,7 +95,7 @@ private extension CountryDetailsViewController {
 
 extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let country = country else {
+        guard let country = presenter.country else {
             return 0
         }
         return country.countryInfo.images.isEmpty ? 1 : country.countryInfo.images.count
@@ -106,10 +104,10 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = mainCollectionView.dequeueReusableCell(withReuseIdentifier: countryImagesCollectionViewCell, for: indexPath) as? CountryImagesCollectionViewCell
         
-        if let images = country?.countryInfo.images, !images.isEmpty {
+        if let images = presenter.country?.countryInfo.images, !images.isEmpty {
             if indexPath.item < images.count {
                 let image = images[indexPath.item]
-                guard let flagURL = country?.countryInfo.flag, let pages = country?.countryInfo.images.count else {
+                guard let flagURL = presenter.country?.countryInfo.flag, let pages = presenter.country?.countryInfo.images.count else {
                     return UICollectionViewCell()
                 }
                 cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
@@ -117,7 +115,7 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
                 cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
             }
         } else {
-            guard let flaURL = country?.countryInfo.flag else { return UICollectionViewCell()}
+            guard let flaURL = presenter.country?.countryInfo.flag else { return UICollectionViewCell()}
             cell?.configure(with: "", flagURL: flaURL, numberOfPages: 0, imageIndex: 0)
         }
         return cell ?? UICollectionViewCell()
@@ -142,7 +140,7 @@ extension CountryDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: countryDetailsTableViewCell, for: indexPath) as? CountryDetailsTableViewCell
-        if let country = country {
+        if let country = presenter.country {
             cell?.configure(with: country)
         }
         return cell ?? UITableViewCell()

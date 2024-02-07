@@ -9,10 +9,6 @@ import UIKit
 
 final class CountryImagesCollectionViewCell: UICollectionViewCell {
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
     // MARK: - Private properties
     
     private let noImage = "no_image_placeholder"
@@ -77,5 +73,9 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
             pageControl.numberOfPages = numberOfPages
             pageControl.currentPage = imageIndex
         }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
