@@ -202,7 +202,7 @@ extension ListOfCountriesViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCountry = presenter.arrayOfCountries[indexPath.item]
         let countryDetailsViewController = CountryDetailsViewController()
-        countryDetailsViewController.country = selectedCountry
+        countryDetailsViewController.presenter.country = selectedCountry
         navigationController?.pushViewController(countryDetailsViewController, animated: true)
     }
 }
