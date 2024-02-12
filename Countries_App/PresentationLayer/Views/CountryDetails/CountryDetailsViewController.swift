@@ -11,7 +11,7 @@ final class CountryDetailsViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private(set) var presenter = ListOfCountriesPresenter(dataService: NetworkManager())
+    private(set) var presenter = PresenterFactory.listOfCountriesPresenter()
     private let countryImagesCollectionViewCell = String(describing: CountryImagesCollectionViewCell.self)
     private let countryDetailsTableViewCell = String(describing: CountryDetailsTableViewCell.self)
     private let collectionViewWidth = UIScreen.main.bounds.width

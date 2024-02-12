@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CountryDetailsTableViewCell: UITableViewCell {
+final class CountryDetailsTableViewCell: UITableViewCell {
     
     // MARK: - Private properties
     

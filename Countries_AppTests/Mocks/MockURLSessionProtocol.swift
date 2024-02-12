@@ -2,7 +2,7 @@
 //  MockURLSessionProtocol.swift
 //  Countries_AppTests
 //
-//  Created by Сергей Курьян on 30.01.2024.
+//  Created by Сергей Курьян on 12.02.2024.
 //
 
 import Foundation
