@@ -48,6 +48,7 @@ final class ListOfCountriesViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        presenter.refreshPresenter()
         presenter.loadData(url: presenter.baseURL) { [weak self] in
             self?.updateUI()
         } errorHandler: { error in
@@ -196,6 +197,13 @@ extension ListOfCountriesViewController: UICollectionViewDelegate {
         }
         
         return CGSize(width: width, height: max(minHeight, textHeight))
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedCountry = presenter.arrayOfCountries[indexPath.item]
+        let countryDetailsViewController = CountryDetailsViewController()
+        countryDetailsViewController.presenter.country = selectedCountry
+        navigationController?.pushViewController(countryDetailsViewController, animated: true)
     }
 }
 

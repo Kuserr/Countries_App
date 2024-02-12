@@ -15,6 +15,8 @@ final class CountryCollectionViewCell: UICollectionViewCell {
     
     private let noImage = "no_image_placeholder"
     
+    // MARK: - CollectionViewCell configuration
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
