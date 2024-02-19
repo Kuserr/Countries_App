@@ -27,7 +27,7 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
     // MARK: - Private functions
     
     private func downloadImage(from url: URL) {
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             guard let self = self else {
                 return
             }
@@ -46,32 +46,59 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
                 }
                 return
             }
-            DispatchQueue.main.async {
-                self.countryImagesImageView.contentMode = .scaleToFill
-                self.countryImagesImageView.image = image
+            
+            if data.isEmpty {
+                let placeholderImage = UIImage(named: self.noImage) ?? UIImage()
+                ImageCache.shared.setImage(placeholderImage, forKey: url.absoluteString)
+                DispatchQueue.main.async {
+                    self.countryImagesImageView.contentMode = .scaleToFill
+                    self.countryImagesImageView.image = placeholderImage
+                }
+            } else {
+                ImageCache.shared.setImage(image, forKey: url.absoluteString)
+                DispatchQueue.main.async {
+                    self.countryImagesImageView.contentMode = .scaleToFill
+                    self.countryImagesImageView.image = image
+                }
             }
         }
-        task.resume()
+        .resume()
     }
     
     private func imageLoading(with images: String, flagURL: String, numberOfPages: Int, imageIndex: Int) {
         if images.isEmpty {
             guard !flagURL.isEmpty, let flagURL = URL(string: flagURL) else {
-                return DispatchQueue.main.async {
+                DispatchQueue.main.async {
                     self.countryImagesImageView.image = UIImage(named: self.noImage)
                     self.pageControl.isHidden = true
                 }
+                return
+            }
+            
+            if let cachedImage = ImageCache.shared.getImage(forKey: flagURL.absoluteString) {
+                self.countryImagesImageView.image = cachedImage
+                self.countryImagesImageView.contentMode = .scaleToFill
+            } else {
+                downloadImage(from: flagURL)
             }
             self.pageControl.isHidden = true
-            downloadImage(from: flagURL)
         }
+        
         else {
             guard let imageURL = URL(string: images) else {
                 return
             }
-            downloadImage(from: imageURL)
-            pageControl.numberOfPages = numberOfPages
-            pageControl.currentPage = imageIndex
+            
+            if let cachedImage = ImageCache.shared.getImage(forKey: imageURL.absoluteString) {
+                self.countryImagesImageView.image = cachedImage
+                self.countryImagesImageView.contentMode = .scaleToFill
+            } else {
+                downloadImage(from: imageURL)
+            }
+            DispatchQueue.main.async {
+                self.pageControl.numberOfPages = numberOfPages
+                self.pageControl.currentPage = imageIndex
+            }
         }
     }
     

@@ -48,12 +48,7 @@ final class ListOfCountriesViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        presenter.refreshPresenter()
-        presenter.loadData(url: presenter.baseURL) { [weak self] in
-            self?.updateUI()
-        } errorHandler: { error in
-            self.showError(error: error)
-        }
+        loadData()
     }
     
     // MARK: - Private functions
@@ -94,6 +89,15 @@ final class ListOfCountriesViewController: UIViewController {
             return
         }
         presenter.loadData(url: presenter.nextPageUrl) { [weak self] in
+            self?.updateUI()
+        } errorHandler: { error in
+            self.showError(error: error)
+        }
+    }
+    
+    private func loadData() {
+        presenter.refreshPresenter()
+        presenter.loadData(url: presenter.baseURL) { [weak self] in
             self?.updateUI()
         } errorHandler: { error in
             self.showError(error: error)
@@ -146,13 +150,25 @@ private extension ListOfCountriesViewController {
 
 extension ListOfCountriesViewController:  UICollectionViewDataSource  {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter.arrayOfCountries.count
+        if NetworkMonitor.shared.isConnected {
+            return presenter.arrayOfCountries.count
+        } else {
+            return presenter.arrayOfCountryEntity.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = mainCollectionView.dequeueReusableCell(withReuseIdentifier: countryCollectionViewCell, for: indexPath) as? CountryCollectionViewCell
-        let country = presenter.arrayOfCountries[indexPath.row]
-        cell?.configure(with: country)
+        
+        if NetworkMonitor.shared.isConnected {
+            let country = presenter.arrayOfCountries[indexPath.row]
+            presenter.saveToCoreData(with: country.name, countryModel: country)
+            cell?.configure(with: country)
+        } else {
+            let countryEntity = presenter.arrayOfCountryEntity[indexPath.row]
+            cell?.configure(with: countryEntity)
+        }
+        
         return cell ?? UICollectionViewCell()
     }
 }
@@ -185,11 +201,28 @@ extension ListOfCountriesViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let country = presenter.arrayOfCountries[indexPath.row]
+        let country: Any
+        if !presenter.arrayOfCountries.isEmpty {
+            country = presenter.arrayOfCountries[indexPath.row]
+        } else if !presenter.arrayOfCountryEntity.isEmpty {
+            country = presenter.arrayOfCountryEntity[indexPath.row]
+        } else {
+            return CGSize(width: collectionView.bounds.width, height: 100)
+        }
+        
         let width = collectionView.bounds.width - widthLayout
         let minHeight: CGFloat = 230
         
-        let textHeight = estimateTextHeight(country.descriptionSmall, width: width)
+        var text: String
+        if let countryData = country as? Country {
+            text = countryData.descriptionSmall
+        } else if let countryEntity = country as? CountryEntity {
+            text = countryEntity.descriptionSmall
+        } else {
+            return CGSize(width: width, height: 100)
+        }
+        
+        let textHeight = estimateTextHeight(text, width: width)
         
         guard textHeight.isFinite else {
             print("Invalid textHeight for indexPath: \(indexPath)")
@@ -200,15 +233,27 @@ extension ListOfCountriesViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedCountry = presenter.arrayOfCountries[indexPath.item]
+        let selectedCountry: Any
+        if !presenter.arrayOfCountries.isEmpty {
+            selectedCountry = presenter.arrayOfCountries[indexPath.item]
+        } else if !presenter.arrayOfCountryEntity.isEmpty {
+            selectedCountry = presenter.arrayOfCountryEntity[indexPath.item]
+        } else {
+            return
+        }
+        
         let countryDetailsViewController = CountryDetailsViewController()
-        countryDetailsViewController.presenter.country = selectedCountry
+        if let countryData = selectedCountry as? Country {
+            countryDetailsViewController.presenter.country = countryData
+        } else if let countryEntity = selectedCountry as? CountryEntity {
+            countryDetailsViewController.presenter.countryEntity = countryEntity
+        }
+        
         navigationController?.pushViewController(countryDetailsViewController, animated: true)
     }
 }
 
 extension ListOfCountriesViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         guard !presenter.nextPageUrl.isEmpty else {
             return .zero

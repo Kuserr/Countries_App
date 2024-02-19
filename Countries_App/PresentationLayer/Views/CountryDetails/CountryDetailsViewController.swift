@@ -31,6 +31,7 @@ final class CountryDetailsViewController: UIViewController {
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isPagingEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
         
         return collectionView
     }()
@@ -95,28 +96,47 @@ private extension CountryDetailsViewController {
 
 extension CountryDetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let country = presenter.country else {
-            return 0
+        if let country = presenter.country {
+            return country.countryInfo.images.isEmpty ? 1 : country.countryInfo.images.count
+        } else if let pages = presenter.decodeImagesFromData()?.count {
+            return pages > 0 ? pages : 1
         }
-        return country.countryInfo.images.isEmpty ? 1 : country.countryInfo.images.count
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = mainCollectionView.dequeueReusableCell(withReuseIdentifier: countryImagesCollectionViewCell, for: indexPath) as? CountryImagesCollectionViewCell
         
-        if let images = presenter.country?.countryInfo.images, !images.isEmpty {
-            if indexPath.item < images.count {
-                let image = images[indexPath.item]
-                guard let flagURL = presenter.country?.countryInfo.flag, let pages = presenter.country?.countryInfo.images.count else {
-                    return UICollectionViewCell()
+        if NetworkMonitor.shared.isConnected {
+            if let images = presenter.country?.countryInfo.images, !images.isEmpty {
+                if indexPath.item < images.count {
+                    let image = images[indexPath.item]
+                    guard let flagURL = presenter.country?.countryInfo.flag, let pages = presenter.country?.countryInfo.images.count else {
+                        return UICollectionViewCell()
+                    }
+                    cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
+                } else {
+                    cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
                 }
-                cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
             } else {
-                cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
+                guard let flagURL = presenter.country?.countryInfo.flag else { return UICollectionViewCell() }
+                cell?.configure(with: "", flagURL: flagURL, numberOfPages: 0, imageIndex: 0)
             }
         } else {
-            guard let flaURL = presenter.country?.countryInfo.flag else { return UICollectionViewCell()}
-            cell?.configure(with: "", flagURL: flaURL, numberOfPages: 0, imageIndex: 0)
+            if let images = presenter.decodeImagesFromData(), !images.isEmpty {
+                if indexPath.item < images.count {
+                    let image = images[indexPath.item]
+                    guard let flagURL = presenter.countryEntity?.flag, let pages = presenter.decodeImagesFromData()?.count else {
+                        return UICollectionViewCell()
+                    }
+                    cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
+                } else {
+                    cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
+                }
+            } else {
+                guard let flagURL = presenter.countryEntity?.flag else { return UICollectionViewCell() }
+                cell?.configure(with: "", flagURL: flagURL, numberOfPages: 0, imageIndex: 0)
+            }
         }
         return cell ?? UICollectionViewCell()
     }
@@ -140,8 +160,11 @@ extension CountryDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: countryDetailsTableViewCell, for: indexPath) as? CountryDetailsTableViewCell
+        
         if let country = presenter.country {
             cell?.configure(with: country)
+        } else if let countryEntity = presenter.countryEntity {
+            cell?.configureForCoreData(with: countryEntity)
         }
         return cell ?? UITableViewCell()
     }

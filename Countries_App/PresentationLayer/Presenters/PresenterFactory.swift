@@ -9,6 +9,6 @@ import Foundation
 
 struct PresenterFactory {
     static func listOfCountriesPresenter() -> ListOfCountriesPresenter {
-        ListOfCountriesPresenter(dataService: NetworkManager(urlsession: URLSession.shared))
+        ListOfCountriesPresenter(dataService: NetworkManager(urlsession: URLSession.shared), coreDataManager: CoreDataManager())
     }
 }

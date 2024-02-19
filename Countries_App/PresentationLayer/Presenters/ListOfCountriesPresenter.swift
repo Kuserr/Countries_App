@@ -12,14 +12,22 @@ final class ListOfCountriesPresenter {
     // MARK: - Private property
     
     private let dataService: NetworkManager
+    private let coreDataManager: CoreDataManager
     private(set) var arrayOfCountries = [Country]()
+    private(set) var arrayOfCountryEntity = [CountryEntity]()
     private(set) var nextPageUrl: String = ""
+    private var isOfflineMode: Bool = false
+    private var countries: [Any] {
+        isOfflineMode ? arrayOfCountryEntity : arrayOfCountries
+    }
     
     let baseURL = "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json"
     var country: Country?
+    var countryEntity: CountryEntity?
     
-    init(dataService: NetworkManager) {
+    init(dataService: NetworkManager, coreDataManager: CoreDataManager) {
         self.dataService = dataService
+        self.coreDataManager = coreDataManager
     }
     
     typealias CompletionHandler = () -> Void
@@ -29,21 +37,48 @@ final class ListOfCountriesPresenter {
         guard let baseUrl = URL(string: url) else {
             return
         }
-        dataService.fetchData(url: baseUrl) { [weak self] (result: Result<CountryModel, DataError>) in
-            switch result {
-            case .success(let data):
-                let result = data
-                self?.arrayOfCountries += result.countries
-                self?.nextPageUrl = result.next ?? ""
-                сompletion()
-            case .failure(let error):
-                errorHandler(error)
+        if NetworkMonitor.shared.isConnected {
+            dataService.fetchData(url: baseUrl) { [weak self] (result: Result<CountryModel, DataError>) in
+                switch result {
+                case .success(let data):
+                    let result = data
+                    self?.isOfflineMode = false
+                    self?.arrayOfCountries += result.countries
+                    self?.nextPageUrl = result.next ?? ""
+                    сompletion()
+                case .failure(let error):
+                    errorHandler(error)
+                }
             }
+        } else {
+            isOfflineMode = true
+            loadDataFromDatabase()
+            сompletion()
         }
     }
     
     func refreshPresenter() {
-        CountryCollectionViewCell.imageCache.removeAllObjects()
+        ImageCache.shared.cache.removeAllObjects()
         arrayOfCountries.removeAll()
+    }
+    
+    func saveToCoreData(with id: String, countryModel: Country) {
+        coreDataManager.checkDBAndSave(with: id, countryModel: countryModel)
+    }
+    
+    func loadDataFromDatabase() {
+        arrayOfCountryEntity = coreDataManager.loadFromDB()
+    }
+    
+    func decodeImagesFromData() -> [String]? {
+        let imagesData = countryEntity?.images ?? Data()
+        var imagesArray = [String]()
+        do {
+            let decoded = try JSONDecoder().decode([String].self, from: imagesData)
+            imagesArray = decoded
+        } catch {
+            print("Error decoding data: \(error)")
+        }
+        return imagesArray
     }
 }
