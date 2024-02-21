@@ -52,10 +52,12 @@ final class CountryCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        flagImageView.image = nil
+        
         descriptionLabel.text = nil
         countryLabel.text = nil
         capitalLabel.text = nil
+        
+        flagImageView.image = nil
         
         super.prepareForReuse()
     }

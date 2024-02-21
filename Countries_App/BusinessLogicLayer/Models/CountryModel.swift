@@ -22,9 +22,12 @@ struct Country: Decodable {
     let countryInfo: CountryInfo
 }
 
+extension Country: CountryRepresentable {}
+
 // MARK: - CountryInfo
 struct CountryInfo: Decodable {
     let images: [String]
     let flag: String
 }
+
 

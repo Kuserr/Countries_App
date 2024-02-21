@@ -26,26 +26,10 @@ final class CoreDataManager {
     
     // MARK: - Private functions
     private func saveToDB(countryModel: Country) {
-        let country = CountryEntity(context: writeContext)
-        country.image = countryModel.image
-        country.continent = countryModel.continent
-        country.population = Int32(countryModel.population)
-        country.capital = countryModel.capital
-        country.name = countryModel.name
-        country.descriptionFull = countryModel.description
-        country.descriptionSmall = countryModel.descriptionSmall
-        country.flag = countryModel.countryInfo.flag
-        country.id = countryModel.name
-        do {
-            let imageData = try JSONEncoder().encode(countryModel.countryInfo.images)
-            country.images = imageData
-            try writeContext.save()
-        } catch {
-            print("Failed to save data to Container: \(error)")
-        }
+        CountryEntity.entity(with: countryModel, in: writeContext)
     }
     
-    func checkDBAndSave(with id: String, countryModel: Country) {
+    func trySaveModel(with id: String, countryModel: Country) {
         let predicate = NSPredicate(format: "id == %@", id)
         let request = CountryEntity.getAllCountryEntityRequest()
         request.predicate = predicate
@@ -60,7 +44,7 @@ final class CoreDataManager {
         }
     }
     
-    func loadFromDB() -> [CountryEntity] {
+    func loadCountries() -> [CountryEntity] {
         let request = CountryEntity.getAllCountryEntityRequest()
         do {
             let countryEntityArray = try readContext.fetch(request)

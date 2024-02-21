@@ -105,39 +105,51 @@ extension CountryDetailsViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = mainCollectionView.dequeueReusableCell(withReuseIdentifier: countryImagesCollectionViewCell, for: indexPath) as? CountryImagesCollectionViewCell
         
         if NetworkMonitor.shared.isConnected {
-            if let images = presenter.country?.countryInfo.images, !images.isEmpty {
-                if indexPath.item < images.count {
-                    let image = images[indexPath.item]
-                    guard let flagURL = presenter.country?.countryInfo.flag, let pages = presenter.country?.countryInfo.images.count else {
-                        return UICollectionViewCell()
-                    }
-                    cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
-                } else {
-                    cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
+            return cellConfigurationOnlineMode(indexPath: indexPath)
+        } else {
+            return cellConfigurationOfflineMode(indexPath: indexPath)
+        }
+    }
+    
+    private func cellConfigurationOnlineMode(indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = mainCollectionView.dequeueReusableCell(withReuseIdentifier: countryImagesCollectionViewCell, for: indexPath) as? CountryImagesCollectionViewCell
+        if let images = presenter.country?.countryInfo.images, !images.isEmpty {
+            if indexPath.item < images.count {
+                let image = images[indexPath.item]
+                guard let flagURL = presenter.country?.countryInfo.flag, let pages = presenter.country?.countryInfo.images.count else {
+                    return UICollectionViewCell()
                 }
+                cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
             } else {
-                guard let flagURL = presenter.country?.countryInfo.flag else { return UICollectionViewCell() }
-                cell?.configure(with: "", flagURL: flagURL, numberOfPages: 0, imageIndex: 0)
+                cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
             }
         } else {
-            if let images = presenter.decodeImagesFromData(), !images.isEmpty {
-                if indexPath.item < images.count {
-                    let image = images[indexPath.item]
-                    guard let flagURL = presenter.countryEntity?.flag, let pages = presenter.decodeImagesFromData()?.count else {
-                        return UICollectionViewCell()
-                    }
-                    cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
-                } else {
-                    cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
-                }
-            } else {
-                guard let flagURL = presenter.countryEntity?.flag else { return UICollectionViewCell() }
-                cell?.configure(with: "", flagURL: flagURL, numberOfPages: 0, imageIndex: 0)
-            }
+            guard let flagURL = presenter.country?.countryInfo.flag else { return UICollectionViewCell() }
+            cell?.configure(with: "", flagURL: flagURL, numberOfPages: 0, imageIndex: 0)
         }
+        
+        return cell ?? UICollectionViewCell()
+    }
+    
+    private func cellConfigurationOfflineMode(indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = mainCollectionView.dequeueReusableCell(withReuseIdentifier: countryImagesCollectionViewCell, for: indexPath) as? CountryImagesCollectionViewCell
+        if let images = presenter.decodeImagesFromData(), !images.isEmpty {
+            if indexPath.item < images.count {
+                let image = images[indexPath.item]
+                guard let flagURL = presenter.countryEntity?.flag, let pages = presenter.decodeImagesFromData()?.count else {
+                    return UICollectionViewCell()
+                }
+                cell?.configure(with: image, flagURL: flagURL, numberOfPages: pages, imageIndex: indexPath.item)
+            } else {
+                cell?.configure(with: "", flagURL: "", numberOfPages: 0, imageIndex: 0)
+            }
+        } else {
+            guard let flagURL = presenter.countryEntity?.flag else { return UICollectionViewCell() }
+            cell?.configure(with: "", flagURL: flagURL, numberOfPages: 0, imageIndex: 0)
+        }
+        
         return cell ?? UICollectionViewCell()
     }
 }

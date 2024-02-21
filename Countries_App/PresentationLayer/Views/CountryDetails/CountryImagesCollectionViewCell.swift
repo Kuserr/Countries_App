@@ -21,7 +21,13 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
         pageControl.currentPageIndicatorTintColor = .white
         pageControl.pageIndicatorTintColor = .lightGray
         
-        imageLoading(with: images, flagURL: flagURL, numberOfPages: numberOfPages, imageIndex: imageIndex)
+        imageLoading(with: images, flag: flagURL, numberOfPages: numberOfPages, imageIndex: imageIndex)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        countryImagesImageView.image = nil
+        
     }
     
     // MARK: - Private functions
@@ -34,26 +40,17 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
             
             if let error = error {
                 print("Image was not loaded:", error.localizedDescription)
-                DispatchQueue.main.async {
-                    self.countryImagesImageView.image = UIImage(named: self.noImage)
-                }
+                self.showImagePlaceholder()
                 return
             }
             
             guard let data = data, let image = UIImage(data: data) else {
-                DispatchQueue.main.async {
-                    self.countryImagesImageView.image = UIImage(named: self.noImage)
-                }
+                self.showImagePlaceholder()
                 return
             }
             
             if data.isEmpty {
-                let placeholderImage = UIImage(named: self.noImage) ?? UIImage()
-                ImageCache.shared.setImage(placeholderImage, forKey: url.absoluteString)
-                DispatchQueue.main.async {
-                    self.countryImagesImageView.contentMode = .scaleToFill
-                    self.countryImagesImageView.image = placeholderImage
-                }
+                self.showImagePlaceholder()
             } else {
                 ImageCache.shared.setImage(image, forKey: url.absoluteString)
                 DispatchQueue.main.async {
@@ -65,40 +62,40 @@ final class CountryImagesCollectionViewCell: UICollectionViewCell {
         .resume()
     }
     
-    private func imageLoading(with images: String, flagURL: String, numberOfPages: Int, imageIndex: Int) {
-        if images.isEmpty {
-            guard !flagURL.isEmpty, let flagURL = URL(string: flagURL) else {
+    private func imageLoading(with images: String, flag: String, numberOfPages: Int, imageIndex: Int) {
+        guard !images.isEmpty, let imagesURL = URL(string: images) else {
+            if !flag.isEmpty, let flagURL = URL(string: flag) {
+                getFromCacheOrDownload(image: flag, imageURL: flagURL)
+                self.pageControl.isHidden = true
+            } else {
                 DispatchQueue.main.async {
                     self.countryImagesImageView.image = UIImage(named: self.noImage)
                     self.pageControl.isHidden = true
                 }
-                return
             }
-            
-            if let cachedImage = ImageCache.shared.getImage(forKey: flagURL.absoluteString) {
-                self.countryImagesImageView.image = cachedImage
-                self.countryImagesImageView.contentMode = .scaleToFill
-            } else {
-                downloadImage(from: flagURL)
-            }
-            self.pageControl.isHidden = true
+            return
         }
         
-        else {
-            guard let imageURL = URL(string: images) else {
-                return
-            }
-            
-            if let cachedImage = ImageCache.shared.getImage(forKey: imageURL.absoluteString) {
-                self.countryImagesImageView.image = cachedImage
-                self.countryImagesImageView.contentMode = .scaleToFill
-            } else {
-                downloadImage(from: imageURL)
-            }
-            DispatchQueue.main.async {
-                self.pageControl.numberOfPages = numberOfPages
-                self.pageControl.currentPage = imageIndex
-            }
+        getFromCacheOrDownload(image: images, imageURL: imagesURL)
+        DispatchQueue.main.async {
+            self.pageControl.numberOfPages = numberOfPages
+            self.pageControl.currentPage = imageIndex
+        }
+    }
+    
+    private func getFromCacheOrDownload(image key: String, imageURL: URL) {
+        if let cachedImages = ImageCache.shared.getImage(forKey: key) {
+            self.countryImagesImageView.image = cachedImages
+            self.countryImagesImageView.contentMode = .scaleToFill
+        } else {
+            downloadImage(from: imageURL)
+        }
+    }
+    
+    private func showImagePlaceholder() {
+        DispatchQueue.main.async {
+            self.countryImagesImageView.contentMode = .scaleToFill
+            self.countryImagesImageView.image = UIImage(named: self.noImage)
         }
     }
     

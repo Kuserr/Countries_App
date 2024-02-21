@@ -9,8 +9,14 @@ import UIKit
 
 final class ImageCache {
     static let shared = ImageCache()
-
-    let cache = NSCache<NSString, UIImage>()
+    typealias CacheType = NSCache<NSString, UIImage>
+    
+    private lazy var cache: CacheType = {
+        let cache = CacheType()
+        cache.countLimit = 100
+        cache.totalCostLimit = 300 * 1024 * 1024 // 300 MB
+        return cache
+    }()
 
     private init() {}
 
@@ -20,5 +26,9 @@ final class ImageCache {
 
     func getImage(forKey key: String) -> UIImage? {
         return cache.object(forKey: key as NSString)
+    }
+    
+    func clearAllData() {
+        cache.removeAllObjects()
     }
 }

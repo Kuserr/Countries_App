@@ -9,7 +9,7 @@ import Foundation
 
 final class ListOfCountriesPresenter {
     
-    // MARK: - Private property
+    // MARK: - Private properties
     
     private let dataService: NetworkManager
     private let coreDataManager: CoreDataManager
@@ -19,6 +19,12 @@ final class ListOfCountriesPresenter {
     private var isOfflineMode: Bool = false
     private var countries: [Any] {
         isOfflineMode ? arrayOfCountryEntity : arrayOfCountries
+    }
+    
+    // MARK: - Private functions
+    
+    private func saveToCoreData(with id: String, countryModel: Country) {
+        coreDataManager.trySaveModel(with: id, countryModel: countryModel)
     }
     
     let baseURL = "https://rawgit.com/NikitaAsabin/799e4502c9fc3e0ea7af439b2dfd88fa/raw/7f5c6c66358501f72fada21e04d75f64474a7888/page1.json"
@@ -45,6 +51,9 @@ final class ListOfCountriesPresenter {
                     self?.isOfflineMode = false
                     self?.arrayOfCountries += result.countries
                     self?.nextPageUrl = result.next ?? ""
+                    for country in result.countries {
+                        self?.saveToCoreData(with: country.name, countryModel: country)
+                    }
                     сompletion()
                 case .failure(let error):
                     errorHandler(error)
@@ -58,16 +67,12 @@ final class ListOfCountriesPresenter {
     }
     
     func refreshPresenter() {
-        ImageCache.shared.cache.removeAllObjects()
+        //ImageCache.shared.clearAllData()
         arrayOfCountries.removeAll()
     }
     
-    func saveToCoreData(with id: String, countryModel: Country) {
-        coreDataManager.checkDBAndSave(with: id, countryModel: countryModel)
-    }
-    
     func loadDataFromDatabase() {
-        arrayOfCountryEntity = coreDataManager.loadFromDB()
+        arrayOfCountryEntity = coreDataManager.loadCountries()
     }
     
     func decodeImagesFromData() -> [String]? {
@@ -81,4 +86,6 @@ final class ListOfCountriesPresenter {
         }
         return imagesArray
     }
+    
+    
 }
