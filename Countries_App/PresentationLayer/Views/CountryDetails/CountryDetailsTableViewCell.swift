@@ -12,7 +12,7 @@ final class CountryDetailsTableViewCell: UITableViewCell {
     // MARK: - Private properties
     
     private let capitalHeadline = "Capital"
-    private let populationHeadline = "Headline"
+    private let populationHeadline = "Population"
     private let continentHeadline = "Continent"
     private let aboutHeadline = "About"
     
@@ -51,6 +51,19 @@ final class CountryDetailsTableViewCell: UITableViewCell {
         countryPopulationLabel.text = String(country.population)
         countryContinentLabel.text = country.continent
         countryDescriptionLabel.text = country.description
+    }
+    
+    func configureForCoreData(with countryEntity: CountryEntity) {
+        capitalLabel.text = capitalHeadline
+        populationLabel.text = populationHeadline
+        continentLabel.text = continentHeadline
+        aboutLabel.text = aboutHeadline
+        
+        countryNameLabel.text = countryEntity.name
+        countryCapitalLabel.text = countryEntity.capital
+        countryPopulationLabel.text = String(countryEntity.population)
+        countryContinentLabel.text = countryEntity.continent
+        countryDescriptionLabel.text = countryEntity.descriptionFull
     }
     
     required init?(coder aDecoder: NSCoder) {

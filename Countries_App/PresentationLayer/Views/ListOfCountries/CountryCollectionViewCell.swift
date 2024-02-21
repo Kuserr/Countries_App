@@ -9,8 +9,6 @@ import UIKit
 
 final class CountryCollectionViewCell: UICollectionViewCell {
     
-    public static var imageCache = NSCache<NSString, UIImage>()
-    
     // MARK: - Private properties
     
     private let noImage = "no_image_placeholder"
@@ -34,6 +32,14 @@ final class CountryCollectionViewCell: UICollectionViewCell {
         imageLoading(with: country)
     }
     
+    func configure(with countryEntity: CountryEntity) {
+        countryLabel.text = countryEntity.name
+        capitalLabel.text = countryEntity.capital
+        descriptionLabel.text = countryEntity.descriptionSmall
+        
+        imageLoadingForDB(with: countryEntity)
+    }
+    
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         
         let size = contentView.systemLayoutSizeFitting(layoutAttributes.size, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
@@ -46,10 +52,12 @@ final class CountryCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        flagImageView.image = nil
+        
         descriptionLabel.text = nil
         countryLabel.text = nil
         capitalLabel.text = nil
+        
+        flagImageView.image = nil
         
         super.prepareForReuse()
     }
@@ -64,12 +72,12 @@ final class CountryCollectionViewCell: UICollectionViewCell {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data, let image = UIImage(data: data) {
-                Self.imageCache.setObject(image, forKey: url.absoluteString as NSString)
+                ImageCache.shared.setImage(image, forKey: url.absoluteString)
                 DispatchQueue.main.async {
                     self.flagImageView.image = image
                 }
             } else {
-                Self.imageCache.setObject(UIImage(named: self.noImage) ?? UIImage(), forKey: url.absoluteString as NSString)
+                ImageCache.shared.setImage(UIImage(named: self.noImage) ?? UIImage(), forKey: url.absoluteString)
                 DispatchQueue.main.async {
                     self.flagImageView.image = UIImage(named: self.noImage)
                 }
@@ -81,7 +89,19 @@ final class CountryCollectionViewCell: UICollectionViewCell {
         guard let imageUrl = URL(string: country.countryInfo.flag) else {
             return
         }
-        guard let cachedImage = Self.imageCache.object(forKey: imageUrl.absoluteString as NSString) else {
+        guard let cachedImage = ImageCache.shared.getImage(forKey: imageUrl.absoluteString) else {
+            return downloadImage(from: imageUrl)
+        }
+        DispatchQueue.main.async {
+            self.flagImageView.image = cachedImage
+        }
+    }
+    
+    private func imageLoadingForDB(with country: CountryEntity) {
+        guard let imageUrl = URL(string: country.flag) else {
+            return
+        }
+        guard let cachedImage = ImageCache.shared.getImage(forKey: imageUrl.absoluteString) else {
             return downloadImage(from: imageUrl)
         }
         DispatchQueue.main.async {
